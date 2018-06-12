@@ -29,6 +29,7 @@ def add_parser(subparser):
     parser.add_argument('--checkpoint', type=str, required=True, help='model checkpoint to load')
     parser.add_argument('--overlap', type=int, default=32, help='tile pixel overlap to predict on')
     parser.add_argument('--seed', type=int, default=0, help='seed for random number generators')
+    parser.add_argument('--tile_size', type=int, default=512, help='tile size for slippy map tiles')
     parser.add_argument('--workers', type=int, default=1, help='number of workers pre-processing images')
     parser.add_argument('tiles', type=str, help='directory to read slippy map image tiles from')
     parser.add_argument('probs', type=str, help='directory to save slippy map probability masks to')
@@ -74,7 +75,7 @@ def main(args):
         Normalize(mean=dataset['stats']['mean'], std=dataset['stats']['std'])
     ])
 
-    directory = BufferedSlippyMapDirectory(args.tiles, transform=transform, overlap=args.overlap)
+    directory = BufferedSlippyMapDirectory(args.tiles, transform=transform, size=args.size, overlap=args.overlap)
     loader = DataLoader(directory, batch_size=args.batch_size)
 
     # don't track tensors with autograd during prediction
